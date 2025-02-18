@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import useHookUser from '../hooks/useHookUser';
 
 
 function Login() {
+    const {login} = useHookUser()
     const navigate = useNavigate()
     const [form, setForm] = useState({
         email: '',
@@ -26,17 +28,15 @@ function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        // try {
-        //   await loginForm(form)
-        //   notify('Login Success')
-        //   setTimeout(() => {
-        //     navigate('/dashboard');
-        //   }, 2000)
-        // } catch (error) {
-        //   notify('Login Failed')
-        // }
-
-        navigate('/profile')
+        try {
+          await login(form)
+          notify('Login Success')
+          setTimeout(() => {
+            navigate('/profile');
+          }, 2000)
+        } catch (error) {
+          notify('Login Failed')
+        }
       }
 
       const registerPage = () => {

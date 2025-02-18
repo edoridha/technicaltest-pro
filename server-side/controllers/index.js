@@ -37,16 +37,16 @@ class Controller {
 
     static async createMember(req, res) {
         try {
-            const { fullName, email, password,gender, birthday } = req.body;
+            const { fullName, email, password,gender, birthDate } = req.body;
 
-            await Member.create({fullName, email, password,gender, birthday});
+            await Member.create({fullName, email, password,gender, birthday: birthDate});
 
             res.status(201).json({
                 status: true,
                 statuCode: "Created",
                 message: "Successfully create user",
               });
-        } catch (error) {
+        } catch (error) {          
             res.status(500).json({message: error.message});
         }
     }
@@ -98,12 +98,13 @@ class Controller {
     }
 
     static async getProfile(req, res) {
-        try {
+        try {            
             const { id } = req.user;
             const member = await Member.findByPk(id);
             if (!member) {
                 throw new Error('Member not found');
             }
+            
             res.status(200).json({
                 status: true,
                 statusCode: "OK",
@@ -111,6 +112,8 @@ class Controller {
                 response: member
               });
         } catch (error) {
+            console.log(error);
+            
             res.status(500).json({message: error.message});
         }
     }

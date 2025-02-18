@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './Register.css';
+import useHookUser from '../hooks/useHookUser';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
+  const { createMember } = useHookUser();
   const [form, setForm] = useState({
     fullName: '',
     email: '',
@@ -15,6 +20,8 @@ export default function Register() {
   });
 
   const [days, setDays] = useState(Array.from({ length: 31 }, (_, i) => i + 1));
+  const notify = (string) => toast(string);
+  const navigate = useNavigate();
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -42,19 +49,30 @@ export default function Register() {
     }
   }, [form.birthDate.month, form.birthDate.year]);
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    const { day, month, year } = form.birthDate;
-    const birthDate = new Date(`${year}-${month}-${day}`);
-    const today = new Date();
+  const handleRegister = async (e) => {
+    try {
+      e.preventDefault();
+      const { day, month, year } = form.birthDate;
+      const birthDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const today = new Date();
 
-    if (birthDate > today) {
-      alert('Birth date cannot be in the future.');
-      return;
+      if (new Date(birthDate) > today) {
+        alert('Birth date cannot be in the future.');
+        return;
+      }
+
+      const formData = { ...form, birthDate };
+      console.log('Form submitted:', formData);
+      await createMember(formData);
+
+      notify('User created');
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+      notify('Failed');
     }
-
-    // Handle registration logic here
-    console.log('Form submitted:', form);
   };
 
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -135,8 +153,8 @@ export default function Register() {
                 type="radio"
                 id="male"
                 name="gender"
-                value="male"
-                checked={form.gender === 'male'}
+                value="Male"
+                checked={form.gender === 'Male'}
                 onChange={handleFormChange}
                 required
               />
@@ -147,8 +165,8 @@ export default function Register() {
                 type="radio"
                 id="female"
                 name="gender"
-                value="female"
-                checked={form.gender === 'female'}
+                value="Female"
+                checked={form.gender === 'Female'}
                 onChange={handleFormChange}
                 required
               />
@@ -158,6 +176,7 @@ export default function Register() {
         </div>
         <button type="submit">Sign Up</button>
       </form>
+      <ToastContainer />
     </div>
   );
 }
