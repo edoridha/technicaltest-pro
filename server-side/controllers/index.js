@@ -1,4 +1,4 @@
-const { generateTokenMember } = require('../helpers/jwt');
+const { generateTokenMember, generateTokenAdmin } = require('../helpers/jwt');
 const { Admin, Member } = require('../models');
 const bcrypt = require('bcrypt');
 
@@ -9,6 +9,29 @@ class Controller {
             res.status(200).json({admins});
         } catch (error) {
             res.status(500).json({message: error.message});
+        }
+    }
+
+    static async loginAdmin(req, res) {
+        try {
+            const { username, password } = req.body;
+            const admin = await Admin.findOne({ where: { username } });
+            if (!admin) {
+                throw new Error('Username not found');
+            }
+            if (bcrypt.compareSync(password, admin.password)) {
+                const access_token = generateTokenAdmin(admin);
+                res.status(200).json({
+                    status: true,
+                    statuCode: "OK",
+                    message: "Success to login",
+                    access_token,
+                  });
+            } else {
+                throw new Error('Wrong password');
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -68,6 +91,24 @@ class Controller {
                 message: "Successfully retrieved customer list",
                 statusCode: "OK",
                 response: members
+              });
+        } catch (error) {
+            res.status(500).json({message: error.message});
+        }
+    }
+
+    static async getProfile(req, res) {
+        try {
+            const { id } = req.user;
+            const member = await Member.findByPk(id);
+            if (!member) {
+                throw new Error('Member not found');
+            }
+            res.status(200).json({
+                status: true,
+                statusCode: "OK",
+                message: "Successfully retrieved user data",
+                response: member
               });
         } catch (error) {
             res.status(500).json({message: error.message});
