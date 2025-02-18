@@ -31,3 +31,9 @@ npm install
 ```
 npm run dev
 ```
+
+- admin login
+```
+username : admin
+password : admin
+```
