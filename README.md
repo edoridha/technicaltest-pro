@@ -33,7 +33,9 @@ npm run dev
 ```
 
 - admin login
+
 ```
+url : /adminpanel
 username : admin
 password : admin
 ```
