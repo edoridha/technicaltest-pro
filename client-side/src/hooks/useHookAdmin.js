@@ -1,7 +1,5 @@
 import axios from "axios";
 
-import React from 'react'
-
 export default function useHookAdmin() {
     const url_api = 'http://localhost:4000'
 

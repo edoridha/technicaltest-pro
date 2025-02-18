@@ -2,7 +2,7 @@ const { verifyToken } = require('../helpers/jwt');
 const { Admin } = require('../models');
 
 module.exports = async (req, res, next) => {
-    try {
+    try {        
         const {access_token} = req.headers;
         if (!access_token) throw { name: "NoToken" }
 
@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
             username: data.username
         }
         next()
-    } catch (error) {
+    } catch (error) {        
         next(error)
     }
 }

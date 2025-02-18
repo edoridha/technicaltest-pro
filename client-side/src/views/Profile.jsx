@@ -12,7 +12,7 @@ export default function Profile() {
 
     useEffect(() => {
         dispatch(fetchProfile())
-    }, [dispatch])
+    }, [])
 
     const handleLogout = () => {
         localStorage.removeItem('access_token')
@@ -29,13 +29,23 @@ export default function Profile() {
 
     return (
         <div>
+            <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Welcome {profile.fullName}</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                    </div>
+                </div>
+            </nav>
             <h1>Profile</h1>
             <p><strong>Full Name:</strong> {profile.fullName}</p>
             <p><strong>Email:</strong> {profile.email}</p>
             <p><strong>Gender:</strong> {profile.gender}</p>
             <p><strong>Birthday:</strong> {new Date(profile.birthday).toLocaleDateString()}</p>
             <p><strong>Join Date:</strong> {new Date(profile.createdAt).toLocaleDateString()}</p>
-            <button onClick={handleLogout}>Logout</button>
+            <button className='btn btn-danger' onClick={handleLogout}>Logout</button>
         </div>
     )
 }
