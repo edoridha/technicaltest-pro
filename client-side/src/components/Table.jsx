@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TableSortLabel } from '@mui/material';
+import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TableSortLabel, TextField } from '@mui/material';
 import PageSelect from './PageSelect';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useHookUser from '../hooks/useHookUser';
@@ -9,22 +9,33 @@ export default function TableMember(props) {
      const location = useLocation()
       const navigate = useNavigate()
       const {deleteMember} = useHookUser()
+      const queryParams = new URLSearchParams(location.search);
 
     const { memberList, currentPage, totalItem, startItem, endItem } = props;
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('');
+    
+    const name = queryParams.get("name") || ""
+    const page = queryParams.get("page") || "0"
+    const limit = queryParams.get("limit") || "10"
 
+    const [searchName, setSearchName] = useState(name || '');
+
+    const handleSearchNameChange = (event) => {
+        const newSearchName = event.target.value;
+        setSearchName(newSearchName);
+        console.log(newSearchName);
+        navigate(`/adminpanel/dashboard/?page=${page}&limit=${limit}&name=${newSearchName}`);
+    };
     const handleRequestSort = (property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-
-        const queryParams = new URLSearchParams(location.search);
-        const page = queryParams.get("page") || "0"
-        const limit = queryParams.get("limit") || "10"
+        
         queryParams.set('sortBy', property);
         queryParams.set('sortOrder', isAsc ? 'desc' : 'asc');
         window.history.pushState(null, '', '?' + queryParams.toString());
+        
 
         navigate(`/adminpanel/dashboard/?page=${page}&limit=${limit}&sortBy=${property}&sortOrder=${isAsc ? 'desc' : 'asc'}`);
     };
@@ -100,6 +111,17 @@ export default function TableMember(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
+                    <TableRow>
+                        <TableCell>
+                            <TextField
+                            id="outlined-basic"
+                            label="Search name"
+                            variant="outlined"
+                            value={searchName}
+                            onChange={handleSearchNameChange}
+                            />
+                        </TableCell>
+                    </TableRow>
                     {
                         memberList.map((d, k) => {
                             return (

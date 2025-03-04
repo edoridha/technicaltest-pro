@@ -22,9 +22,11 @@ export default function Dashboard() {
   const limit = queryParams.get("limit") || "10"
   const sortBy = queryParams.get("sortBy") || null
   const sortOrder = queryParams.get("sortOrder") || null
+  const name = queryParams.get("name") || ""
+
 
   useEffect(() => {
-    dispatch(fetchMembers({ page, limit, sortBy, sortOrder }))
+    dispatch(fetchMembers({ page, limit, sortBy, sortOrder, name }))
 
   }, [dispatch, page, limit, sortBy, sortOrder, location.search])
 
@@ -40,9 +42,9 @@ export default function Dashboard() {
     <div className='container mt-3'>
             <div className='row'>
                 <div className='col-12'>
-                <h1 style={{ fontFamily: 'Sarala, sans-serif' }}>Admin Dashboard</h1>
+                <h1 style={{ fontFamily: 'Sarala, sans-serif' }} className='m-4 p-3' >Admin Dashboard</h1>
                 </div>
-                <div className='col-12'>
+                <div className='col-12 p-5 m-2' >
                     <TableMember memberList={memberList} currentPage={currentPage} totalItem={totalItem} startItem={startItem} endItem={endItem} />
                 </div>
             </div>

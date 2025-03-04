@@ -1,6 +1,7 @@
 const { generateTokenMember, generateTokenAdmin } = require("../helpers/jwt");
 const { Admin, Member } = require("../models");
 const bcrypt = require("bcrypt");
+const { Op } = require('sequelize');
 
 class Controller {
   static async getAdmin(req, res) {
@@ -82,7 +83,7 @@ class Controller {
 
   static async memberList(req, res) {
     try {
-      const { page, limit, sortBy, sortOrder } = req.query;
+      const { page, limit, sortBy, sortOrder, name } = req.query;
 
       const options = {
         limit: Number(limit),
@@ -90,6 +91,10 @@ class Controller {
         where: {status: true},
         order: [],
       };
+
+      if (name && name !== "") {
+        options.where.fullName = { [Op.iLike]: `%${name}%` }; // Use Op.iLike for case-insensitive search
+      }
 
       if (sortBy && sortOrder && sortBy !== "null" && sortOrder !== "null") {
         const sortFields = sortBy.split(",");
@@ -120,6 +125,7 @@ class Controller {
         pagination,
       });
     } catch (error) {
+      console.log('>>>',error,'<<<<<');
       res.status(500).json({ message: error.message });
     }
   }

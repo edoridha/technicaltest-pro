@@ -3,11 +3,11 @@ import axios from "axios";
 
 const url_api = 'http://localhost:4000'
 
-export const fetchMembers = createAsyncThunk('members/fetchMembers', async ({page, limit, sortBy, sortOrder}) => {
+export const fetchMembers = createAsyncThunk('members/fetchMembers', async ({page, limit, sortBy, sortOrder, name}) => {
     try {
         const { data } = await axios({
             method: 'GET',
-            url: `${url_api}/members/?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
+            url: `${url_api}/members/?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}&name=${name}`,
             headers: {
                 access_token: localStorage.getItem('access_token')
             }
